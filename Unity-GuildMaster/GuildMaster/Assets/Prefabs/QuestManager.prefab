@@ -53,6 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActiveQuests:
   - {fileID: 1223356280823622, guid: c97256b7dfd0c914caca1e0889ff4c85, type: 2}
-  - {fileID: 1223356280823622, guid: c97256b7dfd0c914caca1e0889ff4c85, type: 2}
+  - {fileID: 1223356280823622, guid: d634d86c54535e1479ff5a41b5a97845, type: 2}
   AllQuests:
   - {fileID: 1223356280823622, guid: c97256b7dfd0c914caca1e0889ff4c85, type: 2}
+  - {fileID: 1223356280823622, guid: d634d86c54535e1479ff5a41b5a97845, type: 2}
