@@ -8,64 +8,56 @@ using UnityEngine.UI;
 
 public class Display : MonoBehaviour
 {
-
 	#region Variables and Properties
-	public GuildManager t_GuildManager;
-	public Text t_Treasury;
-	public Text t_Population;
-	public Text t_Rooms;
-	public Text t_Members;
-	public Text t_Day;
+	[SerializeField] private GuildManager	d_GuildManager;
+	[SerializeField] private GameManager	d_GameManager;
+	[SerializeField] private Text			d_GoldText;
+	[SerializeField] private Text			d_PopulationText;
+	[SerializeField] private Text			d_RoomsText;
+	[SerializeField] private Text			d_MembersText;
+	[SerializeField] private Text			d_DayText;
 
-	private string t_Treasury_Val;
-	private string t_Population_Val;
-	private string t_Rooms_Val;
-	private string t_Members_Val;
+	private string d_Treasury_Val;
+	private string d_Population_Val;
+	private string d_Rooms_Val;
+	private string d_Members_Val;
+	private string newLine = "\r\n";    // Set the new line string
+	private string t, list = "";
 	#endregion
-
-	#region Unity Methods
-
-	void Start()
-	{
-		
-
-	}
-
 	void Update()
 	{
-		t_Day.text =string.Concat(t_GuildManager.newDay.ToString(), "/", t_GuildManager.month.ToString());
-		t_Treasury.text = t_GuildManager.treasury.ToString();
-		t_Population.text = string.Concat(t_GuildManager.PopCurrent.ToString(), "/", t_GuildManager.popLimit);
-		t_Rooms.text = RoomsList();
-		t_Members.text = MembersList();
+		d_DayText.text =string.Concat(d_GameManager.NewDay.ToString(), "/", d_GameManager.Month.ToString());
+		d_GoldText.text =string.Concat(d_GuildManager.Gold.ToString(),"/", d_GuildManager.GoldCap);
+		d_PopulationText.text = string.Concat(d_GuildManager.Population, "/", d_GuildManager.PopulationLimit);
+		d_RoomsText.text = RoomsList();
+		d_MembersText.text = MembersList();
 	}
-
 	public string RoomsList()
 	{
-		string list = "";	// Initialise the string list
-		string t = "";  // Initialise the temp variable
-		string newLine = "\r\n";	// Set the new line string
-
-		foreach(Room r in t_GuildManager.rooms)	// for each room in the guild
+		if (d_GuildManager.Rooms != null)
 		{
-			t = string.Concat(list, r.name, newLine); // Add the next room to the end of the string list
-			list = t;
+			t = list = "";
+			foreach (GameObject r in d_GuildManager.Rooms)    // for each room in the guild
+			{
+				t = string.Concat(list, r.GetComponent<Room>().name, newLine); // Add the next room to the end of the string list
+				list = t;
+			}
+			return list;
 		}
-		return list;
+		else return "No list found";
 	}
 	public string MembersList()
 	{
-		string list = ""; // Initialise the string list
-		string t = ""; // Initialise the temp variable
-		string newLine = "\r\n"; // Set the new line string
-
-		foreach (Member m in t_GuildManager.members)
+		if (d_GuildManager.Members != null)
 		{
-			t = string.Concat(list, m.name, newLine);
-			list = t;
+			t = list = "";
+			foreach (GameObject m in d_GuildManager.Members)
+			{
+				t = string.Concat(list, m.GetComponent<Member>().name," STR: ", m.GetComponent<Member>().STR, " MAG: ", m.GetComponent<Member>().MAG, " DEX:", m.GetComponent<Member>().DEX, newLine);
+				list = t;
+			}
+			return list;
 		}
-		return list;
+		else return "No list found";
 	}
-
-	#endregion
 }

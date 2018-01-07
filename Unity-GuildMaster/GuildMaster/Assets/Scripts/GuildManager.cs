@@ -4,125 +4,145 @@
 * http://www.n45games.com
 */
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class GuildManager : MonoBehaviour
 {
 	#region Variables and Properties
-	public bool isRunning;
-	public Toggle toggleIsRunning;
-	public List<Room> rooms;    // The list of rooms in the guild
-	public int popLimit;    // The maximum number of members the guild can have
-	public float time;   // The current time
-	[SerializeField] public int treasury;    // The amount of gold available in the guild
-	[SerializeField] private float DaysInMonth;  // The time between each upkeep is paid
-	[SerializeField] public List<Member> members;    // The list of members currently in the guild
-	[SerializeField] private Job[] JobsList;  // The jobs available to characters in this guild
-	private RoomEffect[] roomEffectsList;    // The effects
-	public int newDay;
-	private int prevDay;
-	public int month;
-	private int Upkeep   // The upkeep cost for running the guild
+	public GameManager g_GameManager;   // The GameManager
+	private List<GameObject> g_Rooms;     // The list of rooms in the guild
+	public List<GameObject> Rooms { get { return g_Rooms; } }
+	private int g_PopLimit;     // The maximum number of members the guild can have
+	public int PopulationLimit { get { return g_PopLimit; } }
+	private int g_Gold;     // The amount of gold available in the guild
+	public int Gold { get { return g_Gold; } }
+	private int g_GoldCap;
+	public int GoldCap { get { return g_GoldCap; } }
+	private List<GameObject> g_Members;     // The list of members currently in the guild
+	public List<GameObject> Members { get { return g_Members; } }
+	private int UpkeepCost      // The upkeep cost for running the guild
 	{
 		get
 		{
 			int u = 0;  // Initialise the upkeep calculation
-			foreach (Member mem in members)
-			{ u = u + mem.m_job.j_upkeep; }   // Add the upkeep cost of each member in the guild
+			foreach (GameObject mem in g_Members)
+			{
+				u = u + mem.GetComponent<Member>().m_Upkeep;
+			}   // Add the upkeep cost of each member in the guild
+			foreach (GameObject room in g_Rooms)
+			{
+				u = u + room.GetComponent<Room>().Upkeep;
+			}
 			return u;   // Return the final sum
 		}
 	}
-	public int PopCurrent   // The current number of members in the guild
+	private int CurrentPopulation   // The current number of members in the guild
 	{
 		get
 		{
-			return members.Count;   // PopCurrent is always equal to members list length
+			if (g_Members != null)
+			{
+				return g_Members.Count;   // PopCurrent is always equal to members list length
+			}
+			else return 0;
 		}
 	}
+	public int Population { get { return CurrentPopulation; } }
+	[SerializeField] private GameObject Adventurer;
+	[SerializeField] private GameObject Cabin;
+	[SerializeField] private GameObject Treasury;
 	#endregion
-
-	void Start()
-	{
-		isRunning = false;
-
-	}
-
 	void Update()
 	{
-		toggleIsRunning.isOn = isRunning;
-
-		if (isRunning)
+		if (g_GameManager.IsRunning)
 		{
-			if (Countdown())    // Countdown to end of month
+			if (g_GameManager.Countdown())    // Countdown to end of month
 			{
-				treasury -= Upkeep; // Remove the upkeep cost from the treasury
+				g_Gold -= UpkeepCost; // Remove the upkeep cost from the treasury
 			} // Countdown to end of month
-			if (treasury < 0)
+			if (g_Gold < 0)
 			{
-				EndGame();
+				g_GameManager.EndGame();
 			}
 		}
 	}
-
-	public void InitialiseGame()
+	public void AddNewAdventurer()
 	{
-		members.Clear();
-		rooms.Clear();
-		treasury = 0;
-		time = DaysInMonth;
-		newDay = prevDay = (int)DaysInMonth;
-		AddNewMember(); // The guild begins with one guildmember
-
-	}   // Resest the guild to start a new game
-	public bool Countdown()
-	{
-		if (newDay > (int)time) // If the next day is reached
+		Member adventurer = Adventurer.GetComponent<Member>();
+		if (g_Gold - adventurer.m_Cost >= 0)
 		{
-			prevDay--;	// increment the days
-			newDay--;	//
-			foreach (Member m in members) 
-			{
-				if (Random.Range(0, 100) <= 25) // 25% chance for each member to bring in some money
-				{
-					AddMoney(20);
-				}
-			} // 50% chance for each member to earn 20 Gold
+			g_Gold -= adventurer.m_Cost;
+			AddAdventurer();
 		}
-		if (time <= 0)    // If the current time is less than or equal to 0
-		{
-			time = DaysInMonth;   // Reset the current time
-			newDay = (int)DaysInMonth;
-			prevDay = (int)DaysInMonth + 1;
-
-			if (PopCurrent < popLimit) // If there is room in the guild
-			{
-				if (Random.Range(0, 100) >= 50) // 50% chance to add new member
-				{
-					AddNewMember();
-				}
-			}
-			return true;    // Countdown is complete
-		}
-		time -= Time.deltaTime; // Subtract the time it took to complete last frame to the current time
-		return false;  // Otherwise countdown is incomplete
-	}   // Countdown to the end of the upkeep period
-	public void AddNewMember()
-	{
-		members.Add(new Member(JobsList[0], ("Member_" + Time.time)));
 	}     // Add a new member to the guild
+	public void IncreasePopLimit(int NewBeds)
+	{
+		g_PopLimit += NewBeds;
+	}
+	public void AddMoney(int GoldToAdd)
+	{
+		g_Gold += GoldToAdd;
+		if (g_Gold > g_GoldCap)
+		{
+			g_Gold = g_GoldCap;
+		}
+	}
+	private void AddAdventurer()
+	{
+		Member adventurer = Adventurer.GetComponent<Member>();
+		Adventurer = Instantiate(Adventurer);
+		adventurer.SetBaseStats();
+		adventurer.SetJobStats();
+		adventurer.name = Adventurer.GetComponent<Member>().m_Job.ToString() + g_Members.Count;
+		g_Members.Add(Adventurer);
+	}
+	public void ClearGuild()
+	{
+		g_GoldCap = g_GameManager.GoldCap;
+		g_PopLimit = g_GameManager.PopCap;
+		if (g_Members != null)
+		{
+			g_Members.Clear();
+		}
+		else g_Members = new List<GameObject>();
 
-	public void StartGame()
-	{
-		InitialiseGame();
-		isRunning = true;
+		AddAdventurer();
+	
+		if (g_Rooms != null)
+		{
+			g_Rooms.Clear();
+		}
+		else g_Rooms = new List<GameObject>();
+		g_Gold = 0;
 	}
-	public void EndGame()
+	public void IncreaseTreasuryLimit(int Amount)
 	{
-		isRunning = false;
+		g_GoldCap += Amount;
 	}
-	public void AddMoney(int profit)
+	public void AddNewCabin()
 	{
-		treasury += profit;
+		Room cabin = Cabin.GetComponent<Room>(); // Get the Room script from the gameobject
+		if (g_Gold - cabin.BuildCost >= 0) // If there is enough gold
+		{
+			g_Gold -= cabin.BuildCost;	// Pay the gold to build the cabin
+			Cabin = Instantiate(Cabin); // Instantiate new cabin gameobject
+			cabin = Cabin.GetComponent<Room>(); // Get the Room script from the cabin
+			cabin.name = "Cabin " + g_Rooms.Count;   // Set the name of the room
+			cabin.AddEffectToGuild(this);   //	 Activate the effect
+			g_Rooms.Add(Cabin); // Add the room to the list
+		}
+	}
+	public void AddNewTreasury()
+	{
+		Room treasury = Treasury.GetComponent<Room>();
+		if (g_Gold - treasury.BuildCost >= 0)
+		{
+			g_Gold -= treasury.BuildCost;
+			Treasury = Instantiate(Treasury);
+			treasury = Treasury.GetComponent<Room>();
+			treasury.name = "Treasury " + g_Rooms.Count;
+			treasury.AddEffectToGuild(this);
+			g_Rooms.Add(Treasury);
+		}
 	}
 }

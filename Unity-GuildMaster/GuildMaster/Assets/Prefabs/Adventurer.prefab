@@ -9,50 +9,49 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1696271070374328}
+  m_RootGameObject: {fileID: 1355654646834898}
   m_IsPrefabParent: 1
---- !u!1 &1696271070374328
+--- !u!1 &1355654646834898
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4014241597822358}
-  - component: {fileID: 114460782028131214}
+  - component: {fileID: 4055335339250402}
+  - component: {fileID: 114317226317231108}
   m_Layer: 0
-  m_Name: Cabin
+  m_Name: Adventurer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4014241597822358
+--- !u!4 &4055335339250402
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1696271070374328}
+  m_GameObject: {fileID: 1355654646834898}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 179.8511, y: 77.7182, z: 0.75}
+  m_LocalPosition: {x: 0.15170789, y: -0.39744538, z: -0.023568273}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114460782028131214
+--- !u!114 &114317226317231108
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1696271070374328}
+  m_GameObject: {fileID: 1355654646834898}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e7ca21b24f3c784ea08b4c55b7f4a57, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c6caa3bd499b114696b791262185a3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Cabin
-  r_buildCost: 100
-  r_upkeep: 50
-  r_effect:
-    name: PopulationCap+
+  name: Adventurer
+  m_Upkeep: 10
+  m_Cost: 25
+  m_Job: 0

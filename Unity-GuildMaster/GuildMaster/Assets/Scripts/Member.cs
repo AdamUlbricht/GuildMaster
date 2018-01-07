@@ -5,16 +5,49 @@
 */
 using UnityEngine;
 [System.Serializable]
-public class Member
+public class Member : MonoBehaviour
 {
 	#region Variables and Properties
-	[SerializeField] public string name;	// The name shown in the inspector
-	[SerializeField] public Job m_job;   // The members current job
+	public new string name; // The name shown in the inspector
+	public int m_Upkeep;
+	public int m_Cost;
+	public enum Jobs { Adventurer, Soldier, Mage, Ranger}
+	public Jobs m_Job;
+
+	// Personality
+	public int STR;
+	public int MAG;
+	public int DEX;
+
+	int RND() { return (int)Random.Range(1, 4); }
+	// Job
+
 	#endregion
 
-	public Member(Job job, string newName)	// Constructor
+	public void SetBaseStats()
 	{
-		m_job = job;    // The job for this member
-		name = newName;
+		STR = RND();
+		MAG = RND();
+		DEX = RND();
+	}
+	public void SetJobStats()
+	{
+		switch (m_Job)
+		{
+			case Jobs.Adventurer:
+				break;
+			case Jobs.Soldier:
+				STR += RND();
+				break;
+			case Jobs.Mage:
+				MAG += RND();
+				break;
+			case Jobs.Ranger:
+				DEX += RND();
+				break;
+			default:
+				break;
+		}
+
 	}
 }
