@@ -56,6 +56,10 @@ public class GameManager : MonoBehaviour
 		gm_CurrentTime -= Time.deltaTime; // Subtract the time it took to complete last frame to the current time
 		return false;  // Otherwise countdown is incomplete
 	}   // Countdown to the end of the upkeep period
+
+
+	
+	
 	#endregion
 	void Start()
 	{
