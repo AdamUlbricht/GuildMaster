@@ -8,11 +8,11 @@ using UnityEngine;
 public class Member : MonoBehaviour
 {
 	#region Variables and Properties
-	public new string name; // The name shown in the inspector
-	public int m_Upkeep;
-	public int m_Cost;
+	public new string name; // The name shown in the inspector 
+	public int m_Upkeep;	// The upkeep Cost for this Character Prefab
+	public int m_Cost;		// The purchase cosr for this Character Prefab
 	public enum Jobs { Adventurer, Soldier, Mage, Ranger}
-	public Jobs m_Job;
+	public Jobs m_Job;	
 
 	// Personality
 	public int STR;

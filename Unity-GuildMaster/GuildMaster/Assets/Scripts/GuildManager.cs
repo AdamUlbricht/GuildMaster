@@ -8,19 +8,17 @@ using System.Collections.Generic;
 
 public class GuildManager : MonoBehaviour
 {
-	#region Variables and Properties
-	public GameManager g_GameManager;   // The GameManager
-	private List<GameObject> g_Rooms;     // The list of rooms in the guild
-	public List<GameObject> Rooms { get { return g_Rooms; } }
-	private int g_PopLimit;     // The maximum number of members the guild can have
-	public int PopulationLimit { get { return g_PopLimit; } }
-	private int g_Gold;     // The amount of gold available in the guild
-	public int Gold { get { return g_Gold; } }
-	private int g_GoldCap;
-	public int GoldCap { get { return g_GoldCap; } }
-	private List<GameObject> g_Members;     // The list of members currently in the guild
-	public List<GameObject> Members { get { return g_Members; } }
-	private int UpkeepCost      // The upkeep cost for running the guild
+	#region Private Variables
+	[SerializeField] private GameManager g_GameManager;         // The GameManager
+	[SerializeField] private List<GameObject> g_Members;        // The list of members currently in the guild
+	[SerializeField] private List<GameObject> g_Rooms;          // The list of rooms in the guild
+
+	private QuestManager g_QuestManager;    // The QuestManager, Gotten from the GameManager in Start()
+	private int g_QuestCap;                 // The initial number of quests available
+	private int g_PopLimit;                 // The maximum number of members the guild can have
+	private int g_Gold;                     // The amount of gold available in the guild
+	private int g_GoldCap;                  // The maximum gold the guild can hold
+	private int UpkeepCost                  // The upkeep cost for running the guild
 	{
 		get
 		{
@@ -36,7 +34,7 @@ public class GuildManager : MonoBehaviour
 			return u;   // Return the final sum
 		}
 	}
-	private int CurrentPopulation   // The current number of members in the guild
+	private int CurrentPopulation           // The current number of members in the guild
 	{
 		get
 		{
@@ -47,18 +45,54 @@ public class GuildManager : MonoBehaviour
 			else return 0;
 		}
 	}
-	public int Population { get { return CurrentPopulation; } }
-	[SerializeField] private GameObject Adventurer;
-	[SerializeField] private GameObject Cabin;
-	[SerializeField] private GameObject Treasury;
 	#endregion
+
+	#region Public Propeties
+	public int Population
+	{
+		get { return CurrentPopulation; }
+	}            // Public read access to the current population
+	public int QuestCap
+	{
+		get { return g_QuestCap; }
+	}              // Public read access to the current quest cap
+	public int PopulationLimit
+	{
+		get { return g_PopLimit; }
+	}       // Public read access to the current population cap
+	public int GoldCap
+	{
+		get { return g_GoldCap; }
+	}               // Public read access to the current Gold cap
+	public int Gold
+	{
+		get { return g_Gold; }
+	}                  // Public read access to the current gold
+	public List<GameObject> Rooms
+	{
+		get { return g_Rooms; }
+	}    // Public read access to the current list of Room GameObjects
+	public List<GameObject> Members
+	{
+		get { return g_Members; }
+	}  // public read access tot he current list of Member Gameobjects
+	#endregion
+
+	private void Start()
+	{
+		g_QuestManager = g_GameManager.QuestManager;    // Get the QuestManager from the GameManager
+	}
+
 	void Update()
 	{
 		if (g_GameManager.IsRunning)
 		{
 			if (g_GameManager.Countdown())    // Countdown to end of month
 			{
+				g_QuestManager.UpdateQuests();
+
 				g_Gold -= UpkeepCost; // Remove the upkeep cost from the treasury
+
 			} // Countdown to end of month
 			if (g_Gold < 0)
 			{
@@ -66,83 +100,91 @@ public class GuildManager : MonoBehaviour
 			}
 		}
 	}
-	public void AddNewAdventurer()
+	public void Purchase(GameObject PurchaseItem)
 	{
-		Member adventurer = Adventurer.GetComponent<Member>();
-		if (g_Gold - adventurer.m_Cost >= 0)
+		int cost = 0;       // TODO: Get the cost of the room or character
+
+		if (g_Gold - cost >= 0) // If there is enough gold to make the purchase
 		{
-			g_Gold -= adventurer.m_Cost;
-			AddAdventurer();
+			g_Gold -= cost; // The cost is subtracted from the wallet
+			if (PurchaseItem.GetComponent<Member>() != null) // If the item is a Character
+			{
+				AddCharacterToGiuld(PurchaseItem);
+			}
+			else if (PurchaseItem.GetComponent<Room>() != null) // If the item is a Room
+			{
+				AddRoomToGuild(PurchaseItem);
+			}
 		}
-	}     // Add a new member to the guild
-	public void IncreasePopLimit(int NewBeds)
+	}           // Makes a purchase
+	private void AddRoomToGuild(GameObject Building)
+	{
+		GameObject NewBuilding = Instantiate(g_GameManager.gm_AllRooms[0], g_GameManager.RoomList.transform);   // Instantiate the Room and make is a child of the RoomList GameObject
+		Room newRoom = NewBuilding.GetComponent<Room>(); // Get the room script from the building
+		NewBuilding.name = newRoom.name + g_Rooms.Count;
+		newRoom.AddEffectToGuild(this);
+		g_Rooms.Add(NewBuilding);
+	}        // Adds the Building to the guild
+	private void AddCharacterToGiuld(GameObject Character)
+	{
+		GameObject NewChar = Instantiate(Character, g_GameManager.MemberList.transform); // Instantiate the character and make it a child of the member list gameobject
+		Member newMember = NewChar.GetComponent<Member>();  // Get the member script from the character
+		string charName = newMember.m_Job.ToString() + g_Members.Count; // TODO: Generate the name of the new character
+		newMember.name = charName;      // Assign the characters name to the member script name variable
+		NewChar.name = charName;        // Assign the charactes name to the name of the GameObject
+		NewChar.GetComponent<Member>().SetBaseStats();  // set the base stats of the character
+		NewChar.GetComponent<Member>().SetJobStats();   // set the job stats of the character
+		Members.Add(NewChar);
+	}  // Adds the Character to the guild
+	private void IncreasePopLimit(int NewBeds)
 	{
 		g_PopLimit += NewBeds;
-	}
-	public void AddMoney(int GoldToAdd)
+	}              // Adds new beds to the guild
+	private void AddGold(int GoldToAdd)
 	{
-		g_Gold += GoldToAdd;
-		if (g_Gold > g_GoldCap)
+		g_Gold += GoldToAdd;    // Add the gold to the wallet
+		if (g_Gold > g_GoldCap)     // If the wallet exceeds the gold cap
 		{
-			g_Gold = g_GoldCap;
+			g_Gold = g_GoldCap; // remove excess gold from the universe
 		}
-	}
-	private void AddAdventurer()
+	}                     // Adds gold to the guild wallet
+	private void ClearMembers()
 	{
-		Member adventurer = Adventurer.GetComponent<Member>();
-		Adventurer = Instantiate(Adventurer);
-		adventurer.SetBaseStats();
-		adventurer.SetJobStats();
-		adventurer.name = Adventurer.GetComponent<Member>().m_Job.ToString() + g_Members.Count;
-		g_Members.Add(Adventurer);
-	}
-	public void ClearGuild()
+		if (g_Members != null)  // if there is a list of members
+		{
+			g_Members.Clear();  // clear the list of members
+		}
+		else g_Members = new List<GameObject>();    // generate a new list of members
+	}                             // Clear the Members list
+	private void ClearRooms()
 	{
-		g_GoldCap = g_GameManager.GoldCap;
-		g_PopLimit = g_GameManager.PopCap;
-		if (g_Members != null)
+		if (g_Rooms != null)    // If there is a list of rooms
 		{
-			g_Members.Clear();
+			g_Rooms.Clear();    // clear the list of rooms
 		}
-		else g_Members = new List<GameObject>();
-
-		AddAdventurer();
-	
-		if (g_Rooms != null)
-		{
-			g_Rooms.Clear();
-		}
-		else g_Rooms = new List<GameObject>();
-		g_Gold = 0;
-	}
-	public void IncreaseTreasuryLimit(int Amount)
+		else g_Rooms = new List<GameObject>();  // genertate a new list of rooms
+	}                               // Clear the Rooms List
+	private void IncreaseGoldCap(int Amount)
 	{
 		g_GoldCap += Amount;
 	}
-	public void AddNewCabin()
+	#region Public Methods
+	public void ClearGuild()
 	{
-		Room cabin = Cabin.GetComponent<Room>(); // Get the Room script from the gameobject
-		if (g_Gold - cabin.BuildCost >= 0) // If there is enough gold
-		{
-			g_Gold -= cabin.BuildCost;	// Pay the gold to build the cabin
-			Cabin = Instantiate(Cabin); // Instantiate new cabin gameobject
-			cabin = Cabin.GetComponent<Room>(); // Get the Room script from the cabin
-			cabin.name = "Cabin " + g_Rooms.Count;   // Set the name of the room
-			cabin.AddEffectToGuild(this);   //	 Activate the effect
-			g_Rooms.Add(Cabin); // Add the room to the list
-		}
-	}
-	public void AddNewTreasury()
-	{
-		Room treasury = Treasury.GetComponent<Room>();
-		if (g_Gold - treasury.BuildCost >= 0)
-		{
-			g_Gold -= treasury.BuildCost;
-			Treasury = Instantiate(Treasury);
-			treasury = Treasury.GetComponent<Room>();
-			treasury.name = "Treasury " + g_Rooms.Count;
-			treasury.AddEffectToGuild(this);
-			g_Rooms.Add(Treasury);
-		}
-	}
+		g_GoldCap = g_GameManager.InitialGoldCap;   // reset the gold cap
+		g_PopLimit = g_GameManager.InitialPopCap;   // reset the population cap
+		ClearRooms();   // Clear all rooms from the guild
+		ClearMembers(); // Clear all members from the guild
+
+		AddCharacterToGiuld(g_GameManager.gm_AllCharacters[0]); // Add an adventurer to the guild
+
+		// TODO: Access list using keyword instead of index
+		// AddCharacterToGiuld(g_GameManager.gm_AllCharacters.Adventurer);
+
+		g_Gold = g_GameManager.InitialGold; // Reset the gold to the initial value
+		g_QuestCap = g_GameManager.InitialQuestCap; // Reset the quest cap to the initial value
+		g_QuestManager.UpdateQuests();  // Update the Quest List
+
+	}                               // Wipe the guild info ready for a new game
+	#endregion
 }

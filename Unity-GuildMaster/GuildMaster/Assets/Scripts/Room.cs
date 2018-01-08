@@ -20,22 +20,22 @@ public class Room : MonoBehaviour
 		switch (Effect)
 		{
 			case Effects.PopCap1:
-				guild.IncreasePopLimit(4);
+				//guild.IncreasePopLimit(4);
 				break;
 			case Effects.PopCap2:
-				guild.IncreasePopLimit(6);
+				//guild.IncreasePopLimit(6);
 				break;
 			case Effects.PopCap3:
-				guild.IncreasePopLimit(10);
+				//guild.IncreasePopLimit(10);
 				break;
 			case Effects.TreasuryCap1:
-				guild.IncreaseTreasuryLimit(100);
+				//guild.IncreaseGoldCap(100);
 				break;
 			case Effects.TreasuryCap2:
-				guild.IncreaseTreasuryLimit(250);
+				//guild.IncreaseGoldCap(250);
 				break;
 			case Effects.TreasuryCap3:
-				guild.IncreaseTreasuryLimit(500);
+				//guild.IncreaseGoldCap(500);
 				break;
 			default:
 				break;

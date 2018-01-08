@@ -8,98 +8,138 @@ using UnityEngine.UI;
 
 public class Display : MonoBehaviour
 {
-	#region Variables and Properties
-	[SerializeField] private GuildManager d_GuildManager;
-	[SerializeField] private GameManager d_GameManager;
-	[SerializeField] private QuestManager d_QuestManager;
-	[SerializeField] private Text d_GoldText;
-	[SerializeField] private Text d_PopulationText;
-	[SerializeField] private Text d_RoomsText;
-	[SerializeField] private Text d_MembersText;
-	[SerializeField] private Text d_DayText;
-
-	[SerializeField] private GameObject d_QuestWindow;
-	[SerializeField] private Text d_QuestNameList;
-	[SerializeField] private Text d_QuestDescList;
-
-	private string d_Treasury_Val;
-	private string d_Population_Val;
-	private string d_Rooms_Val;
-	private string d_Members_Val;
-	private string d_Quest_Val;
-	private string newLine = "\r\n";    // Set the new line string
-	private string t, list = "";
+	#region Inspector Variables
+	[SerializeField] private GameObject GameManagerObject;  // The GameManager Object
+	[SerializeField] private Text d_GoldText;           // The Gold textbox
+	[SerializeField] private Text d_PopulationText;     // The Population Textbox
+	[SerializeField] private Text d_RoomsText;          // The Rooms list textbox
+	[SerializeField] private Text d_MembersText;        // The Members list textbox
+	[SerializeField] private Text d_DayText;            // The Date textbox
+	[SerializeField] private GameObject d_QuestWindow;  // The Quest Window
+	[SerializeField] private GameObject d_MemberWindow; // The Member Window
 	#endregion
-	void Update()
+	#region Hidden Variables
+	private GameObject d_MemberList;        // The MemberList GameObject
+	private GameObject d_QuestList;         // The QuestList GameObject
+	private string d_LineReturn = "\r\n";   // The string used for a Line Return
+	private GuildManager d_guild;           // The Guild
+	private QuestManager d_quests;          // The QuestManager
+	private GameManager d_GameManager;      // The GameManager
+	#endregion
+	#region Private Methods
+	private void QuestWindow()
 	{
-		if (d_QuestWindow.activeSelf)	// If the quest window is active
+		if (d_QuestWindow.activeSelf)   // If the quest window is active
 		{
-			d_QuestNameList.text = QuestNamesList();	// show the list of quest names
-			d_QuestDescList.text = QuestDescList();	// show the list of quest descriptions
+			ShowQuestNamesList();   // Show the list of quest names
 		}
-		d_DayText.text = string.Concat(d_GameManager.NewDay.ToString(), "/", d_GameManager.Month.ToString());
-		d_GoldText.text = string.Concat(d_GuildManager.Gold.ToString(), "/", d_GuildManager.GoldCap);
-		d_PopulationText.text = string.Concat(d_GuildManager.Population, "/", d_GuildManager.PopulationLimit);
-		d_RoomsText.text = RoomsList();
-		d_MembersText.text = MembersList();
-	}
-	public string QuestNamesList()
+	}       // Show the quests in the Quest Window
+	private void MemberWindow()
 	{
-		if (d_QuestManager.ActiveQuests != null)
+		if (d_MemberWindow.activeSelf)  // If the Member Window is active
 		{
-			t = list = "";
-			foreach (GameObject q in d_QuestManager.ActiveQuests)
+			ShowMemberNamesList();  // Show the list of Member Names
+		}
+	}       // Show the members in the Member Window
+	private void Day()
+	{
+		d_DayText.text = string.Concat(d_GameManager.CurrentDay, "/", d_GameManager.Month); // Update the Date display
+	}               // Update the Date display
+	private void Gold()
+	{
+		d_GoldText.text = string.Concat(d_guild.Gold, "/", d_guild.GoldCap);    // Update the Gold display
+	}               // Update the Gold display
+	private void Population()
+	{
+		d_PopulationText.text = string.Concat(d_guild.Population, "/", d_guild.PopulationLimit);    // Update the Population display
+	}       // Update the Population display
+	private void Rooms()
+	{
+		d_RoomsText.text = RoomsList(); // Update the Rooms display
+	}   // Update the Rooms display
+	private void Members()
+	{
+		d_MembersText.text = MembersList(); // Update the Members display
+	}   // Update the Members display
+	#endregion
+	#region Public Methods
+	public void PlaceButton(GameObject Button, int NumberInList)
+	{
+		int yPos = (-70) - (NumberInList * 40);  // Calculate the y position 
+		Button.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, yPos); // Place the RectTransform in position
+	}   // Place the GameObject Button in position in the list
+	public void ShowQuestNamesList()
+	{
+		if (d_quests.AvailableQuests != null)   // If there is a valid list of quests
+		{
+			int NumberInList = 0;   // Reset the number in list
+			foreach (GameObject Q in d_quests.AvailableQuests)  // For each quest in the quest list
 			{
-				t = string.Concat(list, q.GetComponent<Quest>().name, newLine);
-
-				list = t;
+				PlaceButton(Q, NumberInList);
+				NumberInList++;
 			}
-			return list;
 		}
-		else return "No List Found";
-	}
-
-	public string QuestDescList()
+	}   // Show the list of Quest Names
+	public void ShowMemberNamesList()
 	{
-		if (d_QuestManager.ActiveQuests != null)
+		if (d_guild.Members != null)    // If there is a valid list of Members
 		{
-			t = list = "";
-			foreach (GameObject q in d_QuestManager.ActiveQuests)
+			int NumberInList = 0;   // Rest the number in list
+			foreach (GameObject M in d_guild.Members)   // For each member in the member list
 			{
-				t = string.Concat(list, q.GetComponent<Quest>().description, newLine);
-				list = t;
+				PlaceButton(M, NumberInList);
+				NumberInList++;
 			}
-			return list;
 		}
-		else return "No List Found";
-	}
-
+	}    // Show the list of Member Names
+	public string ConcatList(string currentList, string newLine)
+	{
+		return string.Concat(currentList, newLine, d_LineReturn); // Add the name to the list, followed by a line return
+	}   // Add a new line to a given list
 	public string RoomsList()
 	{
-		if (d_GuildManager.Rooms != null)
+		if (d_guild.Rooms != null)
 		{
-			t = list = "";
-			foreach (GameObject r in d_GuildManager.Rooms)    // for each room in the guild
+			string list = "";
+			foreach (GameObject Room in d_guild.Rooms)    // for each room in the guild
 			{
-				t = string.Concat(list, r.GetComponent<Room>().name, newLine); // Add the next room to the end of the string list
-				list = t;
+				ConcatList(list, Room.name);    // Add the rooms name to the list
 			}
 			return list;
 		}
 		else return "No list found";
-	}
+	}    // Returns a list of rooms as a string
 	public string MembersList()
 	{
-		if (d_GuildManager.Members != null)
+		if (d_guild.Members != null)
 		{
-			t = list = "";
-			foreach (GameObject m in d_GuildManager.Members)
+			string list = "";
+			foreach (GameObject Member in d_guild.Members)
 			{
-				t = string.Concat(list, m.GetComponent<Member>().name, " STR: ", m.GetComponent<Member>().STR, " MAG: ", m.GetComponent<Member>().MAG, " DEX:", m.GetComponent<Member>().DEX, newLine);
-				list = t;
+				ConcatList(list, Member.name);
 			}
 			return list;
 		}
 		else return "No list found";
-	}
+	}   // Returns a list of members as a string
+	#endregion
+	#region Unity Methods
+	private void Start()
+	{
+		d_GameManager = GameManagerObject.GetComponent<GameManager>();  // Get the GameManager Script from the GameManagerObject
+		d_guild = d_GameManager.GM_Guild;   // Get the Guild from the GameManager
+		d_MemberList = d_GameManager.MemberList;    // Get the MemberList GameObject from the GameManager
+		d_QuestList = d_GameManager.QuestList;  // Get the QuestList GameObject from the GameManager
+	}   // Application Start
+	void Update()
+	{
+		QuestWindow(); // Display Quest Window contents
+		MemberWindow(); // Display Member Window contents
+		Day();  // Display the day
+		Gold(); // Display the Gold
+		Population();	// Display the Population
+		Rooms();	// Display the rooms
+		Members();	// Display the Members
+	}    // Run Every Frame
+	#endregion
 }
