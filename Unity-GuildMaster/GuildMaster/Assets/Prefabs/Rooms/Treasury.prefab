@@ -51,7 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7ca21b24f3c784ea08b4c55b7f4a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Treasury
-  BuildCost: 50
-  Upkeep: 20
-  Effect: 3
+  m_Name: Treasury
+  m_BuildCost: 50
+  m_Upkeep: 25

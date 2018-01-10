@@ -4,86 +4,99 @@
 * http://www.n45games.com
 */
 using UnityEngine;
-using UnityEngine.UI;
+using System.Collections.Generic;
 
-public class GameManager : MonoBehaviour
-{
-	#region Variables
-	[SerializeField] private GuildManager	gm_GuildManager;
-	[SerializeField] private float			gm_DaysInMonth;  // The time between each upkeep is paid
-	[SerializeField] private Toggle			gm_ToggleIsRunning;
-	[SerializeField] private int gm_InitialPopCap;
-	public int PopCap { get { return gm_InitialPopCap; } }
-	public int GoldCap { get { return gm_InitialGoldCap; } }
-	[SerializeField] private int gm_InitialGoldCap;
-	private bool	gm_isRunning;
-	public bool		IsRunning { get { return gm_isRunning; } }
-	private int		gm_NewDay;
-	public int		NewDay { get { return gm_NewDay; } }
-	private int		gm_prevDay;
-	private int		gm_month;
-	public int		Month { get { return gm_month; } }
-	private float	gm_CurrentTime;  // The current time
-	public bool		Countdown()
-	{
-		if (gm_NewDay > (int)gm_CurrentTime) // If the next day is reached
-		{
-			gm_prevDay--;  // increment the days
-			gm_NewDay--;   //
-			foreach (GameObject m in gm_GuildManager.Members)
-			{
-				if (Random.Range(0, 100) <= 25) // 25% chance for each member to bring in some money
-				{
-					gm_GuildManager.AddMoney(20);
-				}
-			} // 50% chance for each member to earn 20 Gold
-		}
-		if (gm_CurrentTime <= 0)    // If the current time is less than or equal to 0
-		{
-			gm_CurrentTime = gm_DaysInMonth;   // Reset the current time
-			gm_NewDay = (int)gm_DaysInMonth;
-			gm_prevDay = (int)gm_DaysInMonth + 1;
-
-			if (gm_GuildManager.Population <gm_GuildManager.PopulationLimit) // If there is room in the guild
-			{
-				if (Random.Range(0, 100) >= 50) // 50% chance to add new member
-				{
-					gm_GuildManager.AddNewAdventurer();
-				}
-			}
-			return true;    // Countdown is complete
-		}
-		gm_CurrentTime -= Time.deltaTime; // Subtract the time it took to complete last frame to the current time
-		return false;  // Otherwise countdown is incomplete
-	}   // Countdown to the end of the upkeep period
-
-
-	
-	
+public class GameManager :MonoBehaviour {
+	#region Inspector
+	[SerializeField] private List<GameObject> m_CharClassPrefabList;
+	public List<GameObject> CharClassPrefabList { get { return m_CharClassPrefabList; } }
+	[SerializeField] private List<GameObject> m_RoomPrefabList;
+	public List<GameObject> RoomPrefabList { get { return m_RoomPrefabList; } }
+	[SerializeField] private List<GameObject> m_QuestPrefabList;
+	public List<GameObject> QuestPrefabList { get { return m_QuestPrefabList; } }
+	[SerializeField] private GameObject m_GuildObject;
+	public GuildManager GuildScript { get { return m_GuildObject.GetComponent<GuildManager>(); } }
+	[SerializeField] private GameObject m_QuestBoardObject;
+	public QuestManager QuestManager { get { return m_QuestBoardObject.GetComponent<QuestManager>(); } }
+	[SerializeField] private GameObject m_MemberList;
+	public GameObject MemberList { get { return m_MemberList; } }
+	[SerializeField] private GameObject m_QuestList;
+	public GameObject QuestList { get { return m_QuestList; } }
+	[SerializeField] private GameObject m_RoomList;
+	public GameObject RoomList { get { return m_RoomList; } }
+	[SerializeField] private int m_InitialPopCap;
+	public int InitialPopCap { get { return m_InitialPopCap; } }
+	[SerializeField] private int m_InitialQuestCap;
+	public int InitialQuestCap { get { return m_InitialQuestCap; } }
+	[SerializeField] private int m_InitialGoldCap;
+	public int InitialGoldCap { get { return m_InitialGoldCap; } }
+	[SerializeField] private int m_DaysInMonth;
+	public int DaysInMonth { get { return m_DaysInMonth; } }
+	[SerializeField] private int m_DayLength;
+	public int DayLength { get { return m_DayLength; } }
+	[SerializeField] private int m_InitialGold;
+	public int InitialGold { get { return m_InitialGold; } }
 	#endregion
-	void Start()
-	{
-		gm_isRunning = false;
 
+	#region Variables
+	private bool m_GameIsRunning;
+	private float m_CurrentTime;
+	public int Month { get; private set; }
+	public int Day { get; private set; }
+	#endregion
+
+	#region Custom Functions
+	// Countdown to the end of the month
+	private void Countdown() {
+		if(m_CurrentTime > DayLength) {
+			NextDay();
+		}
+		if(Day > DaysInMonth) {
+			NextMonth();
+		}
+		m_CurrentTime += Time.deltaTime;
 	}
-	void Update()
-	{
-		gm_ToggleIsRunning.isOn = gm_isRunning;
+	private void NextMonth() {
+		Month++;
+		ResetTheDay();
+		QuestManager.UpdateQuests();
+		GuildScript.PayUpkeep();
 	}
-	public void StartGame()
-	{
+	private void NextDay() {
+		Day++;
+		m_CurrentTime = 0;
+	}
+	public void StartGame() {
 		InitialiseGame();
-		gm_isRunning = true;
+		m_GameIsRunning = true;
 	}
-	public void EndGame()
-	{
-		gm_isRunning = false;
+	public void EndGame() {
+		m_GameIsRunning = false;
 	}
-	public void InitialiseGame()
-	{
-		gm_GuildManager.ClearGuild();
-		gm_CurrentTime = gm_DaysInMonth;
-		gm_NewDay = gm_prevDay = (int)gm_DaysInMonth;
-		gm_GuildManager.AddNewAdventurer(); // The guild begins with one guildmember
-	}   // Resest the guild to start a new game
+	private void InitialiseGame() {
+		GuildScript.ClearGuild();
+		ResetTheMonth();
+	}
+	private void ResetTheMonth() {
+		ResetTheDay();
+		Month = 1;
+	}
+	private void ResetTheDay() {
+		Day = 1;
+	}
+	#endregion
+
+	#region Unity Functions
+	private void Start() {
+		m_GameIsRunning = false;
+	}
+	private void Update() {
+		if(m_GameIsRunning) {
+			Countdown();
+			if(GuildScript.Gold < 0) {
+				EndGame();
+			}
+		}
+	}
+	#endregion
 }

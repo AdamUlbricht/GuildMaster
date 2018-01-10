@@ -4,50 +4,19 @@
 * http://www.n45games.com
 */
 using UnityEngine;
-[System.Serializable]
-public class Member : MonoBehaviour
-{
-	#region Variables and Properties
-	public new string name; // The name shown in the inspector
-	public int m_Upkeep;
-	public int m_Cost;
-	public enum Jobs { Adventurer, Soldier, Mage, Ranger}
-	public Jobs m_Job;
-
-	// Personality
-	public int STR;
-	public int MAG;
-	public int DEX;
-
-	int RND() { return (int)Random.Range(1, 4); }
-	// Job
-
+public class Member :MonoBehaviour {
+	#region Inspector
+	// TODO: The same field name is serialized miltiple times in hte class or its parent class
+	//			This is not supported: Base(MonoBehaviour) m_Name
+	[SerializeField] private string m_Name;
+	public string Name { get { return m_Name; } }
+	[SerializeField] private int m_Upkeep;
+	public int Upkeep { get { return m_Upkeep; } }
+	[SerializeField] private int m_STR;
+	public int STR { get { return m_STR; } }
+	[SerializeField] private int m_MAG;
+	public int MAG { get { return m_MAG; } }
+	[SerializeField] private int m_DEX;
+	public int DEX { get { return m_DEX; } }
 	#endregion
-
-	public void SetBaseStats()
-	{
-		STR = RND();
-		MAG = RND();
-		DEX = RND();
-	}
-	public void SetJobStats()
-	{
-		switch (m_Job)
-		{
-			case Jobs.Adventurer:
-				break;
-			case Jobs.Soldier:
-				STR += RND();
-				break;
-			case Jobs.Mage:
-				MAG += RND();
-				break;
-			case Jobs.Ranger:
-				DEX += RND();
-				break;
-			default:
-				break;
-		}
-
-	}
 }

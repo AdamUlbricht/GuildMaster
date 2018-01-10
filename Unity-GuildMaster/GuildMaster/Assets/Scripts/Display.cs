@@ -6,100 +6,96 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Display : MonoBehaviour
-{
-	#region Variables and Properties
-	[SerializeField] private GuildManager d_GuildManager;
-	[SerializeField] private GameManager d_GameManager;
-	[SerializeField] private QuestManager d_QuestManager;
-	[SerializeField] private Text d_GoldText;
-	[SerializeField] private Text d_PopulationText;
-	[SerializeField] private Text d_RoomsText;
-	[SerializeField] private Text d_MembersText;
-	[SerializeField] private Text d_DayText;
-
-	[SerializeField] private GameObject d_QuestWindow;
-	[SerializeField] private Text d_QuestNameList;
-	[SerializeField] private Text d_QuestDescList;
-
-	private string d_Treasury_Val;
-	private string d_Population_Val;
-	private string d_Rooms_Val;
-	private string d_Members_Val;
-	private string d_Quest_Val;
-	private string newLine = "\r\n";    // Set the new line string
-	private string t, list = "";
+public class Display :MonoBehaviour {
+	#region Inspector
+	[SerializeField] private GameManager m_GameManager;
+	[SerializeField] private Text m_GoldText;
+	[SerializeField] private Text m_PopulationText;
+	[SerializeField] private Text m_RoomsText;
+	[SerializeField] private Text m_MembersText;
+	[SerializeField] private Text m_Date;
 	#endregion
-	void Update()
-	{
-		if (d_QuestWindow.activeSelf)	// If the quest window is active
-		{
-			d_QuestNameList.text = QuestNamesList();	// show the list of quest names
-			d_QuestDescList.text = QuestDescList();	// show the list of quest descriptions
-		}
-		d_DayText.text = string.Concat(d_GameManager.NewDay.ToString(), "/", d_GameManager.Month.ToString());
-		d_GoldText.text = string.Concat(d_GuildManager.Gold.ToString(), "/", d_GuildManager.GoldCap);
-		d_PopulationText.text = string.Concat(d_GuildManager.Population, "/", d_GuildManager.PopulationLimit);
-		d_RoomsText.text = RoomsList();
-		d_MembersText.text = MembersList();
-	}
-	public string QuestNamesList()
-	{
-		if (d_QuestManager.ActiveQuests != null)
-		{
-			t = list = "";
-			foreach (GameObject q in d_QuestManager.ActiveQuests)
-			{
-				t = string.Concat(list, q.GetComponent<Quest>().name, newLine);
 
-				list = t;
-			}
-			return list;
-		}
-		else return "No List Found";
-	}
+	#region Variables
+	#endregion
 
-	public string QuestDescList()
-	{
-		if (d_QuestManager.ActiveQuests != null)
-		{
-			t = list = "";
-			foreach (GameObject q in d_QuestManager.ActiveQuests)
-			{
-				t = string.Concat(list, q.GetComponent<Quest>().description, newLine);
-				list = t;
-			}
-			return list;
+	#region Custom Functions
+	private void DisplayQuests() {
+		if(m_GameManager.QuestList.activeInHierarchy) {
+			Debug.Log("QuestWindow is Active");
+			DisplayQuestList();
 		}
-		else return "No List Found";
 	}
+	private void DisplayQuestList() {
+		if(m_GameManager.QuestManager.AvailableQuests != null) {
+			int n = 0;
+			foreach(GameObject q in m_GameManager.QuestManager.AvailableQuests) {
+				PlaceButton(q, n);
+				n++;
+			}
+		}
+		else { Debug.Log("No QuestList found!"); }
+	}
+	private void DisplayMembers() {
+		if(m_GameManager.MemberList.activeSelf) {
+			DisplayMemberList();
+		}
+	}
+	private void DisplayRooms() {
+		if(m_GameManager.RoomList.activeSelf) {
+			DisplayRoomsList();
+		}
+	}
+	private void DisplayDate() {
+		string date = m_GameManager.Day + "/" + m_GameManager.Month;
+		m_Date.text = date;
+	}
+	private void DisplayGold() {
+		string Gold = m_GameManager.GuildScript.Gold.ToString() + "/" + m_GameManager.GuildScript.GoldCap.ToString();
+		m_GoldText.text = Gold;
+	}
+	private void DisplayPopulation() {
+		string Population = m_GameManager.GuildScript.Population.ToString() + "/" + m_GameManager.GuildScript.PopLimit.ToString();
+		m_PopulationText.text = Population;
+	}
+	private void DisplayMemberList() {
+		if(m_GameManager.GuildScript.Members != null) {
+			int n = 0;
+			foreach(GameObject m in m_GameManager.GuildScript.Members) {
+				PlaceButton(m, n);
+				n++;
+			}
+		}
+		else { Debug.Log("No MemberList found!"); }
+	}
+	private void DisplayRoomsList() {
+		if(m_GameManager.GuildScript.Rooms != null) {
+			int n = 0;
+			foreach(GameObject r in m_GameManager.GuildScript.Rooms) {
+				PlaceButton(r, n);
+				n++;
+			}
+		}
+		else { Debug.Log("No RoomList found!"); }
+	}
+	private void PlaceButton(GameObject Button, int n) {
+		int yPos = (-70) - (n * 40);
+		Button.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, yPos);
+	}
+	private string ConcatList(string list, string newLine) {
+		string t = list + newLine + "\r\n";
+		return t;
+	}
+	#endregion
 
-	public string RoomsList()
-	{
-		if (d_GuildManager.Rooms != null)
-		{
-			t = list = "";
-			foreach (GameObject r in d_GuildManager.Rooms)    // for each room in the guild
-			{
-				t = string.Concat(list, r.GetComponent<Room>().name, newLine); // Add the next room to the end of the string list
-				list = t;
-			}
-			return list;
-		}
-		else return "No list found";
+	#region Unity Functions
+	private void Update() {
+		DisplayQuests();
+		DisplayMembers();
+		DisplayRooms();
+		DisplayDate();
+		DisplayGold();
+		DisplayPopulation();
 	}
-	public string MembersList()
-	{
-		if (d_GuildManager.Members != null)
-		{
-			t = list = "";
-			foreach (GameObject m in d_GuildManager.Members)
-			{
-				t = string.Concat(list, m.GetComponent<Member>().name, " STR: ", m.GetComponent<Member>().STR, " MAG: ", m.GetComponent<Member>().MAG, " DEX:", m.GetComponent<Member>().DEX, newLine);
-				list = t;
-			}
-			return list;
-		}
-		else return "No list found";
-	}
+	#endregion
 }

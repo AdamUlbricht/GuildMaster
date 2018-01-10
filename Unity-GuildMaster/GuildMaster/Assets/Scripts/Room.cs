@@ -4,41 +4,16 @@
 * http://www.n45games.com
 */
 using UnityEngine;
-[System.Serializable]
-public class Room : MonoBehaviour
-{
-	#region Variables and Properties
-	public new string name; // The name shown in the inspector
-	public int BuildCost;    // The cost to build the room
-	public int Upkeep;	    // The upkeep cost of the room
-	public enum Effects { PopCap1,  PopCap2, PopCap3, TreasuryCap1, TreasuryCap2, TreasuryCap3};
-	public Effects Effect;
-
+public class Room :MonoBehaviour {
+	#region Inspector
+	// TODO: The same field name is serialized miltiple times in hte class or its parent class
+	//			This is not supported: Base(MonoBehaviour) m_Name
+	[SerializeField] private string m_Name;
+	public string Name { get { return m_Name; } }
+	[SerializeField] private int m_BuildCost;
+	public int BuildCost { get { return m_BuildCost; } }
+	[SerializeField] private int m_Upkeep;
+	public int Upkeep { get { return m_Upkeep; } }
 	#endregion
-	public void AddEffectToGuild(GuildManager guild)
-	{
-		switch (Effect)
-		{
-			case Effects.PopCap1:
-				guild.IncreasePopLimit(4);
-				break;
-			case Effects.PopCap2:
-				guild.IncreasePopLimit(6);
-				break;
-			case Effects.PopCap3:
-				guild.IncreasePopLimit(10);
-				break;
-			case Effects.TreasuryCap1:
-				guild.IncreaseTreasuryLimit(100);
-				break;
-			case Effects.TreasuryCap2:
-				guild.IncreaseTreasuryLimit(250);
-				break;
-			case Effects.TreasuryCap3:
-				guild.IncreaseTreasuryLimit(500);
-				break;
-			default:
-				break;
-		}
-	}
+
 }
