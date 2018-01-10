@@ -118,11 +118,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a903b57bd04e679438413349df5f78d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Kill An Orc
-  description: Bring back the orcs head
-  STR_Req: 2
-  MAG_Req: 1
-  DEX_Req: 1
+  m_Name: Kill An Orc
+  m_Description: Bring back the Orc's head.
+  m_STR: 2
+  m_MAG: 0
+  m_DEX: 0
 --- !u!114 &114921778668577918
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -183,7 +183,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1821033649513348}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 80, y: -15, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224638792789531870}

@@ -159,13 +159,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c6caa3bd499b114696b791262185a3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Adventurer
+  m_Name: Adventurer
   m_Upkeep: 10
-  m_Cost: 25
-  m_Job: 0
-  STR: 0
-  MAG: 0
-  DEX: 0
+  m_STR: 1
+  m_MAG: 1
+  m_DEX: 1
 --- !u!222 &222054185585615746
 CanvasRenderer:
   m_ObjectHideFlags: 1

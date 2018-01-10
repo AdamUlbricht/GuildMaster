@@ -1,62 +1,58 @@
-﻿using System.Collections;
+﻿/*
+* Copyright (c) N45 Games
+* Author: Adam Ulbricht
+* http://www.n45games.com
+*/
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class QuestManager : MonoBehaviour
-{
-	#region Inspector Variables
-	[SerializeField] private GameObject GameManagerObject;  // The GameManager GameObject
+public class QuestManager :MonoBehaviour {
+	#region Inspector
+	[SerializeField] private GameManager m_GameManager;
+	[SerializeField] private List<GameObject> m_AvailableQuests;
+	public List<GameObject> AvailableQuests { get { return m_AvailableQuests; } }
+	[SerializeField] private List<GameObject> m_ActiveQuests;
+	public List<GameObject> ActiveQuests { get { return m_ActiveQuests; } }
 	#endregion
-	#region Hidden Variables
-	private GuildManager q_GuildManager;
-	private GameObject q_QuestList;
-	private List<GameObject> q_ActiveQuests;
-	private List<GameObject> q_AvailableQuests;
+
+	#region Variables
 	#endregion
-	#region Private Methods
-	private void Start()
-	{
-		ActiveQuests.Clear();
-		AvailableQuests.Clear();
-	}
-	#endregion
-	#region Public Methods
-	public List<GameObject> ActiveQuests
-	{
-		get { return q_ActiveQuests; }
-	}
-	public List<GameObject> AvailableQuests
-	{
-		get { return q_AvailableQuests; }
-	}
-	public void UpdateQuests()
-	{
-		foreach (GameObject Q in AvailableQuests)
-		{
-			Destroy(Q);
+
+	#region Custom Functions
+	private void ClearAvailable() {
+		if(m_AvailableQuests != null) {
+			m_AvailableQuests.Clear();
 		}
-		AvailableQuests.Clear();
-		for (int i = 0; i < q_GuildManager.QuestCap; i++)
-		{
+		else { m_AvailableQuests = new List<GameObject>(); }
+	}
+	private void ClearActive() {
+		if(m_ActiveQuests != null) {
+			m_ActiveQuests.Clear();
+		}
+		else { m_ActiveQuests = new List<GameObject>(); }
+	}
+	public void UpdateQuests() {
+		foreach(GameObject q in m_AvailableQuests) {
+			Destroy(q);
+		}
+		ClearAvailable();
+		for(int i = 0; i < m_GameManager.GuildScript.QuestCap; i++) {
 			AddNewQuest();
 		}
-
 	}
-	public void AddNewQuest()
-	{
-		//GameObject newQ = Instantiate(AllQuests[Random.Range(0, AllQuests.Count)],q_QuestList.transform,false);
-		//AvailableQuests.Add(newQ);
+	public void AddNewQuest() {
+		GameObject newQ = Instantiate(m_GameManager.QuestPrefabList[Random.Range(0, m_GameManager.QuestPrefabList.Count)], m_GameManager.QuestList.transform);
+		m_AvailableQuests.Add(newQ);
 	}
-	public void GoOnQuest(Quest quest)
-	{
-		//AvailableQuests.Remove(Q.gameObject);
-		//ActiveQuests.Add(Q.gameObject);
+	public void GoOnQuest(Quest quest) {
+		Debug.Log("TODO: GoOnQuest(Quest quest) - sends a character on the selected quest.");
+	}
+	#endregion
 
-		//bool strWin = (M.STR > Q.STR_Req);
-		//bool magWin = (M.MAG > Q.MAG_Req);
-		//bool dexWin = (M.DEX > Q.DEX_Req);
-
+	#region Unity Functions
+	private void Start() {
+		ClearActive();
+		ClearAvailable();
 	}
 	#endregion
 }

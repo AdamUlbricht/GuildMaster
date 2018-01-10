@@ -85,19 +85,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114567646437901842}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114480486006787290, guid: a191b31c038c2424c8e375962079d5b9,
-          type: 2}
-        m_MethodName: GoOnQuest
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 114965137583557180}
-          m_ObjectArgumentAssemblyTypeName: Quest, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114567646437901842
@@ -171,11 +159,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a903b57bd04e679438413349df5f78d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Cull The Wolves
-  description: Reduce the wolf population
-  STR_Req: 1
-  MAG_Req: 0
-  DEX_Req: 2
+  m_Name: Cull The Wolves
+  m_Description: Reduce the wolf population.
+  m_STR: 1
+  m_MAG: 0
+  m_DEX: 1
 --- !u!222 &222345282033258042
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -214,7 +202,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1431782002684422}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 80, y: -15, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224170783027469516}
