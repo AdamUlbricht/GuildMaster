@@ -120,6 +120,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Name: Kill An Orc
   m_Description: Bring back the Orc's head.
+  m_Duration: 2
+  m_Reward: 10
   m_STR: 2
   m_MAG: 0
   m_DEX: 0
@@ -161,7 +163,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114361819197902486}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114773507624437004}
+        m_MethodName: SelectThisQuest
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!222 &222236991931765452

@@ -16,6 +16,8 @@ public class QuestManager :MonoBehaviour {
 	#endregion
 
 	#region Variables
+	private GameObject m_SelectedQuest;
+	private GameObject m_SelectedCharacter;
 	#endregion
 
 	#region Custom Functions
@@ -42,10 +44,38 @@ public class QuestManager :MonoBehaviour {
 	}
 	public void AddNewQuest() {
 		GameObject newQ = Instantiate(m_GameManager.QuestPrefabList[Random.Range(0, m_GameManager.QuestPrefabList.Count)], m_GameManager.QuestList.transform);
+		newQ.GetComponent<Quest>().QuestBoard = this.GetComponent<QuestManager>();
 		m_AvailableQuests.Add(newQ);
 	}
-	public void GoOnQuest(Quest quest) {
-		Debug.Log("TODO: GoOnQuest(Quest quest) - sends a character on the selected quest.");
+	public void PickQuest(GameObject quest) {
+		m_SelectedQuest = quest;
+		m_GameManager.QuestList.SetActive(false);
+		m_GameManager.MemberList.SetActive(true);
+	}
+	public void PickCharacter(GameObject character) {
+		m_SelectedCharacter = character;
+		m_GameManager.MemberList.SetActive(false);
+		CompleteQuest();
+	}
+	private void CompleteQuest() {
+		m_SelectedQuest.GetComponent<Quest>().Completion = 0;
+		m_ActiveQuests.Add(m_SelectedQuest);
+		m_AvailableQuests.Remove(m_SelectedQuest);
+
+	}
+	public void QuestProgression() {
+		foreach(GameObject q in ActiveQuests) {
+			Quest quest = q.GetComponent<Quest>();
+			quest.Completion++;
+			if(quest.Completion >= quest.Duration) {
+				quest.Finished();
+				Debug.Log("Quest Complete! - " + quest.name);
+				// TODO: calculate whether or not the chacter succeeded
+				m_GameManager.GuildScript.AddGold(quest.Reward);
+				m_ActiveQuests.Remove(q);
+				Destroy(q);
+			}
+		}
 	}
 	#endregion
 
@@ -55,4 +85,5 @@ public class QuestManager :MonoBehaviour {
 		ClearAvailable();
 	}
 	#endregion
+
 }

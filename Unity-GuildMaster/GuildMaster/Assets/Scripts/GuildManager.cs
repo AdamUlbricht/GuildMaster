@@ -33,6 +33,7 @@ public class GuildManager :MonoBehaviour {
 	}
 	public void PayUpkeep() {
 		Gold -= UpkeepCost;
+		Debug.Log("Upkeep Paid! $-" + UpkeepCost + ".");
 	}
 	private int UpkeepCost {
 		get {
@@ -47,10 +48,12 @@ public class GuildManager :MonoBehaviour {
 		}
 	}
 	private void IncreasePopLimit(int NewBeds) {
+		Debug.Log(NewBeds + " new beds added to the guild!");
 		PopLimit += NewBeds;
 	}
-	private void AddGold(int GoldToAdd) {
+	public void AddGold(int GoldToAdd) {
 		Gold += GoldToAdd;
+		Debug.Log(GoldToAdd + " Gold added to the bank!");
 		if(Gold > GoldCap) {
 			Gold = GoldCap;
 		}
@@ -120,21 +123,13 @@ public class GuildManager :MonoBehaviour {
 		//g_Rooms.Add(NewBuilding);
 	}
 	private void AddCharacterToGiuld(GameObject Character) {
-		//GameObject NewChar = Instantiate(Character, g_GameManager.MemberList.transform); 
-		// Instantiate the character and make it a child of the member list gameobject
-		//Member newMember = NewChar.GetComponent<Member>();  
-		// Get the member script from the character
-		//string charName = newMember.m_Job.ToString() + g_Members.Count; 
+		GameObject NewChar = Instantiate(Character, m_GameManager.MemberList.transform); 
+		Member newMember = NewChar.GetComponent<Member>();  
 		// TODO: Generate the name of the new character
-		//newMember.name = charName;    
-		// Assign the characters name to the member script name variable
-		//NewChar.name = charName;       
-		// Assign the charactes name to the name of the GameObject
-		//NewChar.GetComponent<Member>().SetBaseStats(); 
-		// set the base stats of the character
-		//NewChar.GetComponent<Member>().SetJobStats();   
-		// set the job stats of the character
-		//Members.Add(NewChar);
+		NewChar.GetComponent<Member>().SetBaseStats();	
+		NewChar.GetComponent<Member>().SetJobStats();
+		newMember.QuestBoard = m_GameManager.QuestManager;
+		Members.Add(NewChar);
 	}
 
 }

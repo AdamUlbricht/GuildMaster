@@ -22,7 +22,6 @@ public class Display :MonoBehaviour {
 	#region Custom Functions
 	private void DisplayQuests() {
 		if(m_GameManager.QuestList.activeInHierarchy) {
-			Debug.Log("QuestWindow is Active");
 			DisplayQuestList();
 		}
 	}

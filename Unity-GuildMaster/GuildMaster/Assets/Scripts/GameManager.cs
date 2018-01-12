@@ -50,6 +50,7 @@ public class GameManager :MonoBehaviour {
 	private void Countdown() {
 		if(m_CurrentTime > DayLength) {
 			NextDay();
+			QuestManager.QuestProgression();
 		}
 		if(Day > DaysInMonth) {
 			NextMonth();
@@ -84,6 +85,7 @@ public class GameManager :MonoBehaviour {
 	private void ResetTheDay() {
 		Day = 1;
 	}
+
 	#endregion
 
 	#region Unity Functions

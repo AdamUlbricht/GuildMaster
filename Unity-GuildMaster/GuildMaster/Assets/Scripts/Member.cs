@@ -19,4 +19,15 @@ public class Member :MonoBehaviour {
 	[SerializeField] private int m_DEX;
 	public int DEX { get { return m_DEX; } }
 	#endregion
+
+	public QuestManager QuestBoard { get; set; }
+	public void SelectThisCharacter() {
+		QuestBoard.PickCharacter(this.gameObject);
+	}
+	public void SetBaseStats() {
+
+	}
+	public void SetJobStats() {
+
+	}
 }
