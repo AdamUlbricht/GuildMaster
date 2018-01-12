@@ -20,6 +20,8 @@ public class Member :MonoBehaviour {
 	public int DEX { get { return m_DEX; } }
 	#endregion
 
+	public GameObject MyQuest { get; set; }
+
 	public QuestManager QuestBoard { get; set; }
 	public void SelectThisCharacter() {
 		QuestBoard.PickCharacter(this.gameObject);

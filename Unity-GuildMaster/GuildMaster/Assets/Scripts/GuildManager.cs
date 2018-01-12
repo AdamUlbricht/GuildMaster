@@ -13,6 +13,8 @@ public class GuildManager :MonoBehaviour {
 	public List<GameObject> Members { get { return m_Members; } }
 	[SerializeField] private List<GameObject> m_Rooms;
 	public List<GameObject> Rooms { get { return m_Rooms; } }
+	[SerializeField] private List<GameObject> m_MembersOnQuest;
+	public List<GameObject> MembersOnQuest { get { return m_MembersOnQuest; } }
 	#endregion
 
 	#region Variables
@@ -81,6 +83,9 @@ public class GuildManager :MonoBehaviour {
 
 		ClearMembers();
 		PopLimit = m_GameManager.InitialPopCap;
+		AddCharacterToGiuld(m_GameManager.CharClassPrefabList[0]);
+		AddCharacterToGiuld(m_GameManager.CharClassPrefabList[0]);
+		AddCharacterToGiuld(m_GameManager.CharClassPrefabList[0]);
 		AddCharacterToGiuld(m_GameManager.CharClassPrefabList[0]);
 		// TODO: Access list using keyword instead of index
 		// AddCharacterToGiuld(g_GameManager.gm_AllCharacters.Adventurer);

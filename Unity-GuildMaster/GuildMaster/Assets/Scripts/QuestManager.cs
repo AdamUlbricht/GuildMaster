@@ -38,41 +38,52 @@ public class QuestManager :MonoBehaviour {
 			Destroy(q);
 		}
 		ClearAvailable();
-		for(int i = 0; i < m_GameManager.GuildScript.QuestCap; i++) {
-			AddNewQuest();
+		for(int i = 0; i < m_GameManager.GuildScript.QuestCap-1; i++) {
+			AddNewQuest(i);
 		}
 	}
-	public void AddNewQuest() {
-		GameObject newQ = Instantiate(m_GameManager.QuestPrefabList[Random.Range(0, m_GameManager.QuestPrefabList.Count)], m_GameManager.QuestList.transform);
+	public void AddNewQuest(int i) {
+		//GameObject newQ = Instantiate(m_GameManager.QuestPrefabList[Random.Range(0, m_GameManager.QuestPrefabList.Count)], m_GameManager.QuestList.transform);
+		GameObject newQ = Instantiate(m_GameManager.QuestPrefabList[i], m_GameManager.QuestList.transform); 
 		newQ.GetComponent<Quest>().QuestBoard = this.GetComponent<QuestManager>();
 		m_AvailableQuests.Add(newQ);
 	}
 	public void PickQuest(GameObject quest) {
+		m_AvailableQuests.Remove(quest);
+		m_ActiveQuests.Add(quest);
 		m_SelectedQuest = quest;
 		m_GameManager.QuestList.SetActive(false);
-		m_GameManager.MemberList.SetActive(true);
 	}
-	public void PickCharacter(GameObject character) {
-		m_SelectedCharacter = character;
-		m_GameManager.MemberList.SetActive(false);
-		CompleteQuest();
-	}
-	private void CompleteQuest() {
-		m_SelectedQuest.GetComponent<Quest>().Completion = 0;
-		m_ActiveQuests.Add(m_SelectedQuest);
-		m_AvailableQuests.Remove(m_SelectedQuest);
 
+	public void PickCharacter(GameObject character) {
+		// The quest is given to the character.
+		character.GetComponent<Member>().MyQuest = m_SelectedQuest;
+		// Move the character out of the guild.
+		m_GameManager.GuildScript.MembersOnQuest.Add(character);
+		m_GameManager.GuildScript.Members.Remove(character);
+		
 	}
 	public void QuestProgression() {
-		foreach(GameObject q in ActiveQuests) {
-			Quest quest = q.GetComponent<Quest>();
-			quest.Completion++;
-			if(quest.Completion >= quest.Duration) {
-				quest.Finished();
-				Debug.Log("Quest Complete! - " + quest.name);
+		foreach(GameObject c in m_GameManager.GuildScript.MembersOnQuest) {
+
+			Quest q = c.GetComponent<Member>().MyQuest.GetComponent<Quest>();
+
+			q.Completion++;
+
+			if(q.Completion >= q.Duration) {
+
+				q.Finished();
+
+				Debug.Log("Quest Complete! - " + q.name);
+
 				// TODO: calculate whether or not the chacter succeeded
-				m_GameManager.GuildScript.AddGold(quest.Reward);
-				m_ActiveQuests.Remove(q);
+
+				m_GameManager.GuildScript.AddGold(q.Reward);
+
+				// Move the charcter back to the guild
+				m_GameManager.GuildScript.MembersOnQuest.Remove(c);
+				m_GameManager.GuildScript.Members.Add(c);
+				
 				Destroy(q);
 			}
 		}

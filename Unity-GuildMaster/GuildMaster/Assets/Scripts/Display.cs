@@ -11,8 +11,6 @@ public class Display :MonoBehaviour {
 	[SerializeField] private GameManager m_GameManager;
 	[SerializeField] private Text m_GoldText;
 	[SerializeField] private Text m_PopulationText;
-	[SerializeField] private Text m_RoomsText;
-	[SerializeField] private Text m_MembersText;
 	[SerializeField] private Text m_Date;
 	#endregion
 
@@ -27,17 +25,19 @@ public class Display :MonoBehaviour {
 	}
 	private void DisplayQuestList() {
 		if(m_GameManager.QuestManager.AvailableQuests != null) {
-			int n = 0;
-			foreach(GameObject q in m_GameManager.QuestManager.AvailableQuests) {
-				PlaceButton(q, n);
-				n++;
+			if(m_GameManager.QuestManager.AvailableQuests.Count > 0) {
+				int n = 0;
+				for(int i=0; i<m_GameManager.QuestManager.AvailableQuests.Count; i++) { 
+					PlaceButton(m_GameManager.QuestManager.AvailableQuests[i], n, 1);
+					n++;
+				}
 			}
 		}
-		else { Debug.Log("No QuestList found!"); }
 	}
 	private void DisplayMembers() {
 		if(m_GameManager.MemberList.activeSelf) {
 			DisplayMemberList();
+			DisplayMembersOnQuestList();
 		}
 	}
 	private void DisplayRooms() {
@@ -57,11 +57,25 @@ public class Display :MonoBehaviour {
 		string Population = m_GameManager.GuildScript.Population.ToString() + "/" + m_GameManager.GuildScript.PopLimit.ToString();
 		m_PopulationText.text = Population;
 	}
+
+
 	private void DisplayMemberList() {
 		if(m_GameManager.GuildScript.Members != null) {
 			int n = 0;
 			foreach(GameObject m in m_GameManager.GuildScript.Members) {
-				PlaceButton(m, n);
+				PlaceButton(m, n,1 );
+				n++;
+			}
+		}
+	}
+
+
+
+	private void DisplayMembersOnQuestList() {
+		if(m_GameManager.GuildScript.MembersOnQuest != null) {
+			int n = 0;
+			foreach(GameObject m in m_GameManager.GuildScript.MembersOnQuest) {
+				PlaceButton(m, n, 2);
 				n++;
 			}
 		}
@@ -71,15 +85,16 @@ public class Display :MonoBehaviour {
 		if(m_GameManager.GuildScript.Rooms != null) {
 			int n = 0;
 			foreach(GameObject r in m_GameManager.GuildScript.Rooms) {
-				PlaceButton(r, n);
+				PlaceButton(r, n, 1);
 				n++;
 			}
 		}
 		else { Debug.Log("No RoomList found!"); }
 	}
-	private void PlaceButton(GameObject Button, int n) {
+	private void PlaceButton(GameObject Button, int n, int col) {
 		int yPos = (-70) - (n * 40);
-		Button.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, yPos);
+		int xPos = (50 + ((col - 1) * 160));
+		Button.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
 	}
 	private string ConcatList(string list, string newLine) {
 		string t = list + newLine + "\r\n";

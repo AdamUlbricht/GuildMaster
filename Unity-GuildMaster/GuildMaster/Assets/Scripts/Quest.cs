@@ -39,6 +39,6 @@ public class Quest :MonoBehaviour {
 		Completion = 0;
 	}
 	public void SelectThisQuest() {
-		QuestBoard.PickQuest(this.gameObject);
+		QuestBoard.PickQuest(gameObject);
 	}
 }
