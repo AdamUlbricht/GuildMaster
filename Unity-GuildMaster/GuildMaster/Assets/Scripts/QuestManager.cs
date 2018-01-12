@@ -54,7 +54,6 @@ public class QuestManager :MonoBehaviour {
 		m_SelectedQuest = quest;
 		m_GameManager.QuestList.SetActive(false);
 	}
-
 	public void PickCharacter(GameObject character) {
 		// The quest is given to the character.
 		character.GetComponent<Member>().MyQuest = m_SelectedQuest;
@@ -65,26 +64,15 @@ public class QuestManager :MonoBehaviour {
 	}
 	public void QuestProgression() {
 		foreach(GameObject c in m_GameManager.GuildScript.MembersOnQuest) {
-
 			Quest q = c.GetComponent<Member>().MyQuest.GetComponent<Quest>();
-
 			q.Completion++;
-
 			if(q.Completion >= q.Duration) {
-
+				ActiveQuests.Remove(q.gameObject);
 				q.Finished();
-
-				Debug.Log("Quest Complete! - " + q.name);
-
 				// TODO: calculate whether or not the chacter succeeded
-
 				m_GameManager.GuildScript.AddGold(q.Reward);
-
-				// Move the charcter back to the guild
 				m_GameManager.GuildScript.MembersOnQuest.Remove(c);
 				m_GameManager.GuildScript.Members.Add(c);
-				
-				Destroy(q);
 			}
 		}
 	}

@@ -33,7 +33,7 @@ public class Quest :MonoBehaviour {
 	public QuestManager QuestBoard { get; set; }
 	public float Completion { get; set; }
 	public void Finished() {
-
+		Destroy(gameObject);
 	}
 	private void Start() {
 		Completion = 0;
