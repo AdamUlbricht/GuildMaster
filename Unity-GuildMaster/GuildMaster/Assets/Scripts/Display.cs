@@ -18,7 +18,6 @@ public class Display :MonoBehaviour {
 	#endregion
 
 	#region Custom Functions
-
 	private void DisplayQuests() {
 		if(m_GameManager.QuestList.activeInHierarchy) {
 			DisplayQuestList();
@@ -36,7 +35,6 @@ public class Display :MonoBehaviour {
 			}
 		}
 	}
-
 	private void DisplayActiveQuestList() {
 		if(m_GameManager.QuestManager.ActiveQuests != null) {
 			int n = 0;
@@ -52,8 +50,6 @@ public class Display :MonoBehaviour {
 		int xPos = (50 + ((col - 1) * 160));
 		Button.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
 	}
-
-
 	private void DisplayMembers() {
 		if(m_GameManager.MemberList.activeSelf) {
 			DisplayMemberList();
@@ -79,7 +75,6 @@ public class Display :MonoBehaviour {
 		}
 		else { Debug.Log("No MemberList found!"); }
 	}
-
 	private void DisplayRooms() {
 		if(m_GameManager.RoomList.activeSelf) {
 			DisplayRoomsList();

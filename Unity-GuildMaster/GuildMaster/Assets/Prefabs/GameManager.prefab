@@ -680,6 +680,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharClassPrefabList:
   - {fileID: 1133288956767618, guid: 7800845103acd6c4cab10fd6400e1900, type: 2}
+  - {fileID: 1133288956767618, guid: 896731ab9fbeb9240b450d6ee7acd5ab, type: 2}
+  - {fileID: 1133288956767618, guid: 87d56fac766f43d4fbebcb1330f2fae2, type: 2}
+  - {fileID: 1133288956767618, guid: b42b2048aa3f9274a92f468505d509a0, type: 2}
   m_RoomPrefabList:
   - {fileID: 1696271070374328, guid: ccd0719d3d50f944788d98ddef50bb74, type: 2}
   - {fileID: 1696271070374328, guid: 67f930830f2a92d41910e9367a6ce8a9, type: 2}
@@ -687,6 +690,7 @@ MonoBehaviour:
   - {fileID: 1422082712168940, guid: 5d7db8b1aa231aa4eadf41a95a5afd84, type: 2}
   - {fileID: 1885872690253390, guid: c97256b7dfd0c914caca1e0889ff4c85, type: 2}
   - {fileID: 1424385494468272, guid: d634d86c54535e1479ff5a41b5a97845, type: 2}
+  - {fileID: 1424385494468272, guid: 9cf2b61b56b89a74d906c1484fc1acfa, type: 2}
   m_GuildObject: {fileID: 1188270923537144}
   m_QuestBoardObject: {fileID: 1129522313182670}
   m_MemberList: {fileID: 1893179404350918}

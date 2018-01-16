@@ -99,7 +99,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.8161765, g: 0.79796565, b: 0.69615054, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -170,8 +170,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c6caa3bd499b114696b791262185a3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Name: Adventurer
-  m_Upkeep: 10
+  m_TextName: {fileID: 114138291843470312}
+  m_Job: {fileID: 1112241246658564, guid: 3a91851b8730d5b459ccbb677a8ae33b, type: 2}
   m_STR: 1
   m_MAG: 1
   m_DEX: 1
