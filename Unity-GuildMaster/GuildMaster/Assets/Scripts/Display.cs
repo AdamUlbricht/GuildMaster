@@ -5,6 +5,7 @@
 */
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 
 public class Display :MonoBehaviour {
 	#region Inspector
@@ -30,6 +31,7 @@ public class Display :MonoBehaviour {
 				int n = 0;
 				foreach(GameObject m in m_GameManager.QuestManager.AvailableQuests) { 
 					PlaceButton(m, n, 1);
+					m.GetComponent<Quest>().UpdateText();
 					n++;
 				}
 			}
@@ -46,7 +48,7 @@ public class Display :MonoBehaviour {
 		else { Debug.Log("No MemberList found!"); }
 	}
 	private void PlaceButton(GameObject Button, int n, int col) {
-		int yPos = (-70) - (n * 40);
+		int yPos = (-70) - (n * 70);
 		int xPos = (50 + ((col - 1) * 160));
 		Button.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
 	}
@@ -61,6 +63,7 @@ public class Display :MonoBehaviour {
 			int n = 0;
 			foreach(GameObject m in m_GameManager.GuildScript.Members) {
 				PlaceButton(m, n,1 );
+				m.GetComponent<Member>().UpdateText();
 				n++;
 			}
 		}

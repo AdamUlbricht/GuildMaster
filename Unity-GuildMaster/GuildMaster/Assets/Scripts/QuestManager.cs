@@ -5,6 +5,7 @@
 */
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class QuestManager :MonoBehaviour {
 	#region Inspector
@@ -91,6 +92,7 @@ public class QuestManager :MonoBehaviour {
 		m_ActiveQuests.Add(m_SelectedQuest);
 		Debug.Log(character.name + " has left the guild to complete the quest '" + m_SelectedQuest.name + "'.");
 		QuestSelected = false;
+
 	}
 
 	public void QuestProgression() {
@@ -124,7 +126,8 @@ public class QuestManager :MonoBehaviour {
 		m_GameManager.GuildScript.MembersOnQuest.Remove(C);
 		// Finish the Quest
 		Q.Finished();
-		
+
+
 		CheckSuccess();
 
 	}
@@ -135,22 +138,38 @@ public class QuestManager :MonoBehaviour {
 		CheckWin(M.STR, Q.STR);
 		CheckWin(M.MAG, Q.MAG);
 
+		bool Success = false;
 		// If the number of wins is eqaual to, or greater than, the quests difficulty level
 		if(Wins >= Q.Difficulty) {
 			// The quest is a success
+			Success = true;
 			m_GameManager.GuildScript.AddGold(Q.Reward);
 			m_GameManager.GuildScript.Members.Add(C);
 			Debug.Log(C.name + " has returned from the quest " + Q.name + "!");
+			
 		}
 		else {
+			Success = false;
 			Debug.Log(C.name + " did not make it back from the quest " + Q.name + "...");
 			// The character lost
 			Destroy(C);
 		}
+		Analytics.CustomEvent("Quest", new Dictionary<string, object>
+{
+			{"Character Name", M.name },
+			{"Character DEX", M.DEX },
+			{"Character MAG", M.MAG },
+			{"Character STR", M.STR },
+			{"Quest Name", Q.name },
+			{"Quest DEX",  Q.DEX},
+			{"Quest MAG",  Q.MAG},
+			{"Quest STR",  Q.STR},
+			{"Success", Success }
+		});
 	}
 
 	private void CheckWin(int c, int q) {
-		if(c > q) {
+		if(c >= q) {
 			Wins++;
 		}
 	}

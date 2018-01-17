@@ -5,6 +5,7 @@
 */
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 public class Member :MonoBehaviour {
 	#region Inspector
 	[SerializeField] private Text m_TextName;
@@ -57,5 +58,8 @@ public class Member :MonoBehaviour {
 		m_DEX += CharacterJob.DEXBonus;
 		m_STR += CharacterJob.STRBonus;
 		m_MAG += CharacterJob.MAGBonus;
+	}
+	public void UpdateText() {
+		GetComponentInChildren<Text>().text = gameObject.name + "\r\n" + "STR: " + STR + " MAG: " + MAG + " DEX: " + DEX;
 	}
 }

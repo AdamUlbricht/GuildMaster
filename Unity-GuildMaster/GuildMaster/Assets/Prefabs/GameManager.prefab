@@ -698,10 +698,11 @@ MonoBehaviour:
   m_RoomList: {fileID: 1685387498405448}
   m_InitialPopCap: 4
   m_InitialQuestCap: 4
-  m_InitialGoldCap: 150
-  m_DaysInMonth: 15
+  m_InitialGoldCap: 100
+  m_DaysInMonth: 30
   m_DayLength: 5
-  m_InitialGold: 100
+  m_QuestPeriod: 10
+  m_InitialGold: 0
 --- !u!114 &114066281564265836
 MonoBehaviour:
   m_ObjectHideFlags: 1

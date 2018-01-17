@@ -5,6 +5,7 @@
 */
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Analytics;
 
 public class GameManager :MonoBehaviour {
 	#region Inspector
@@ -43,11 +44,11 @@ public class GameManager :MonoBehaviour {
 	// The Starting population limit
 	[SerializeField] private int m_InitialPopCap;
 	public int InitialPopCap { get { return m_InitialPopCap; } }
-	
+
 	// The starting Quest limit
 	[SerializeField] private int m_InitialQuestCap;
 	public int InitialQuestCap { get { return m_InitialQuestCap; } }
-	
+
 	// The starting gold limit
 	[SerializeField] private int m_InitialGoldCap;
 	public int InitialGoldCap { get { return m_InitialGoldCap; } }
@@ -59,7 +60,13 @@ public class GameManager :MonoBehaviour {
 	// The number of Seconds in the day
 	[SerializeField] private int m_DayLength;
 	public int DayLength { get { return m_DayLength; } }
-	
+
+	// The Number of days between each questboard update
+	[SerializeField] private int m_QuestPeriod;
+	public int QuestPeriod {
+		get { return m_QuestPeriod; }
+	}
+
 	// The amount of gold given to a new guild
 	[SerializeField] private int m_InitialGold;
 	public int InitialGold { get { return m_InitialGold; } }
@@ -70,6 +77,7 @@ public class GameManager :MonoBehaviour {
 	private float m_CurrentTime;
 	public int Month { get; private set; }
 	public int Day { get; private set; }
+	public int QuestDay { get; set; }
 	#endregion
 
 	#region Custom Functions
@@ -77,7 +85,6 @@ public class GameManager :MonoBehaviour {
 	private void Countdown() {
 		if(m_CurrentTime > DayLength) {
 			NextDay();
-			QuestManager.QuestProgression();
 		}
 		if(Day > DaysInMonth) {
 			NextMonth();
@@ -88,13 +95,22 @@ public class GameManager :MonoBehaviour {
 	private void NextMonth() {
 		Month++;
 		ResetTheDay();
-		QuestManager.UpdateQuests();
 		GuildScript.PayUpkeep();
+	}
+	// The QuestPeriod has ended
+	private void NextQuest() {
+		QuestDay = 1;
+		QuestManager.UpdateQuests();
 	}
 	// The day has ended
 	private void NextDay() {
 		Day++;
+		QuestDay++;
 		m_CurrentTime = 0;
+		QuestManager.QuestProgression();
+		if(QuestDay >= QuestPeriod) {
+			NextQuest();
+		}
 	}
 	// Start the game
 	public void StartGame() {

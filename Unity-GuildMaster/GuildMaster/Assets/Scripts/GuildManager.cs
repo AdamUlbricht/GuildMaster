@@ -5,6 +5,7 @@
 */
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Analytics;
 
 public class GuildManager :MonoBehaviour {
 	#region Inspector
@@ -166,12 +167,7 @@ public class GuildManager :MonoBehaviour {
 
 		ClearMembers();
 		PopLimit = m_GameManager.InitialPopCap;
-		AddCharacterToGuild(m_GameManager.CharClassPrefabList[Random.Range(0,m_GameManager.CharClassPrefabList.Count)]);
-		AddCharacterToGuild(m_GameManager.CharClassPrefabList[Random.Range(0, m_GameManager.CharClassPrefabList.Count)]);
-		AddCharacterToGuild(m_GameManager.CharClassPrefabList[Random.Range(0, m_GameManager.CharClassPrefabList.Count)]);
-		AddCharacterToGuild(m_GameManager.CharClassPrefabList[Random.Range(0, m_GameManager.CharClassPrefabList.Count)]);
-		// TODO: Access list using keyword instead of index
-		// AddCharacterToGiuld(g_GameManager.gm_AllCharacters.Adventurer);
+		AddCharacterToGuild(m_GameManager.CharClassPrefabList[0]);
 
 		QuestCap = m_GameManager.InitialQuestCap;
 		m_GameManager.QuestManager.UpdateQuests();

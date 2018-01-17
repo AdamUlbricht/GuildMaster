@@ -4,6 +4,7 @@
 * http://www.n45games.com
 */
 using UnityEngine;
+using UnityEngine.Analytics;
 public class Room :MonoBehaviour {
 	#region Inspector
 	// TODO: The same field name is serialized miltiple times in hte class or its parent class

@@ -4,6 +4,8 @@
 * http://www.n45games.com
 */
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Analytics;
 public class Quest :MonoBehaviour {
 	#region Inspector
 	// TODO: The same field name is serialized miltiple times in hte class or its parent class
@@ -43,6 +45,10 @@ public class Quest :MonoBehaviour {
 	}
 	private void Start() {
 		Completion = 0;
+		
+	}
+	public void UpdateText() {
+		GetComponentInChildren<Text>().text = m_QuestName + "\n\r" + "STR: " + STR + " DEX: " + DEX + " MAG: " + MAG;
 	}
 	public void SelectThisQuest() {
 		QuestBoard.PickQuest(gameObject);
